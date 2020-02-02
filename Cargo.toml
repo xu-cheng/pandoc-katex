@@ -1,0 +1,16 @@
+[package]
+name = "pandoc-katex"
+version = "0.1.0"
+authors = ["Cheng XU <rust@xuc.me>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+description = "Pandoc filter to render math equations using KaTeX"
+repository = "https://github.com/xu-cheng/pandoc-katex"
+readme = "README.md"
+keywords = ["LaTeX", "KaTeX", "Math", "Pandoc"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+anyhow = "1.0"
+katex = "0.1"
+serde_json = "1.0"
