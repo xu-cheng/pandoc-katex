@@ -4,6 +4,7 @@
 [![Latest Version](https://img.shields.io/crates/v/pandoc-katex.svg)](https://crates.io/crates/pandoc-katex)
 
 A [pandoc filter](https://pandoc.org/filters.html) to render math equations using [KaTeX](https://katex.org).
+It is powered by the [`katex` Rust crate](https://github.com/xu-cheng/katex-rs).
 
 ## Install
 
