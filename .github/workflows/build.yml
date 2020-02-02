@@ -25,6 +25,10 @@ jobs:
           toolchain: stable
           target: ${{ matrix.platform.target }}
           override: true
+      - name: Set up musl-gcc
+        if: matrix.platform.name == 'linux-musl'
+        run: |
+          sudo apt-get install musl-tools -y
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
@@ -33,8 +37,18 @@ jobs:
       - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
-          command: build
-          args: --release --all-features
+          command: install
+          args: --target ${{ matrix.platform.target }} --locked --path . --root pandoc-katex
+      - name: Package
+        id: pkg
+        run: |
+          tar -C ./pandoc-katex -czf "pandoc-katex-$(git describe --tags --always)-${{ matrix.platform.target }}.tar.gz" .
+          echo "::set-output name=file::$(echo pandoc-katex-*.tar.gz)"
+      - name: Upload
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.platform.name }}
+          path: ${{ steps.pkg.file }}
 
   clippy:
     name: clippy
