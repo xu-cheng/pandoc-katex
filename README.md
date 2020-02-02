@@ -12,6 +12,8 @@ It is powered by the [`katex` Rust crate](https://github.com/xu-cheng/katex-rs).
 cargo install pandoc-katex
 ```
 
+Alternatively, you can download the pre-built binaries from [releases](https://github.com/xu-cheng/pandoc-katex/releases).
+
 ## Usage
 
 ```bash
