@@ -5,13 +5,16 @@ jobs:
     strategy:
       matrix:
         platform:
-          - os: ubuntu
+          - name: linux-gnu
+            os: ubuntu
             target: x86_64-unknown-linux-gnu
-          - os: ubuntu
+          - name: linux-musl
+            os: ubuntu
             target: x86_64-unknown-linux-musl
-          - os: macos
+          - name: macos
+            os: macos
             target: x86_64-apple-darwin
-    name: build [${{ matrix.platform.os }} ${{ matrix.platform.target }}]
+    name: build [${{ matrix.platform.name }}]
     runs-on: ${{ matrix.platform.os }}-latest
     steps:
       - name: Set up Git repository
@@ -26,7 +29,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.name }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
