@@ -14,6 +14,9 @@ jobs:
           - name: macos
             os: macos
             target: x86_64-apple-darwin
+          - name: windows
+            os: ubuntu
+            target: x86_64-pc-windows-gnu
     name: build [${{ matrix.platform.name }}]
     runs-on: ${{ matrix.platform.os }}-latest
     steps:
@@ -29,8 +32,12 @@ jobs:
         if: matrix.platform.name == 'linux-musl'
         run: |
           sudo apt-get install musl-tools -y
-          echo "::set-env name=CC::musl-gcc -static"
-          echo "::set-env name=MAKEFLAGS::CC=musl-gcc\\ -static"
+          echo "::set-env name=MAKEFLAGS::CC=musl-gcc"
+      - name: Set up mingw-w64
+        if: matrix.platform.name == 'windows'
+        run: |
+          sudo apt-get install mingw-w64 -y
+          echo "::set-env name=MAKEFLAGS::CC=x86_64-w64-mingw32-gcc"
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
