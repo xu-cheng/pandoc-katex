@@ -95,9 +95,9 @@ checksum = "b8b7a7c0c47db5545ed3fef7468ee7bb5b74691498139e4b3f6a20685dc6dd8e"
 
 [[package]]
 name = "katex"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a46c1fa034bf46e53e2d3f08a052f8d30541a8cb6dc051ec4ad497209a630aa"
+checksum = "0ccbd0fbdd5f1d9ad2ad62f8a07a67666db2f27eb3bb4de9195d18e9cc40fdb8"
 dependencies = [
  "derive_builder",
  "quick-js",
