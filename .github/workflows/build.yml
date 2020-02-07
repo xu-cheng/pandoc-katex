@@ -103,12 +103,18 @@ jobs:
         with:
           name: macos
           path: .
+      - name: Download artifact [windows]
+        uses: actions/download-artifact@v1
+        with:
+          name: windows
+          path: .
       - name: Get artifact names
         id: pkg
         run: |
           echo "::set-output name=linux_gnu_file::$(echo pandoc-katex-*-x86_64-unknown-linux-gnu.tar.gz)"
           echo "::set-output name=linux_musl_file::$(echo pandoc-katex-*-x86_64-unknown-linux-musl.tar.gz)"
           echo "::set-output name=macos_file::$(echo pandoc-katex-*-x86_64-apple-darwin.tar.gz)"
+          echo "::set-output name=windows_file::$(echo pandoc-katex-*-x86_64-pc-windows-gnu.tar.gz)"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -142,6 +148,15 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./${{ steps.pkg.outputs.macos_file }}
           asset_name: ${{ steps.pkg.outputs.macos_file }}
+          asset_content_type: application/gzip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifact [windows]
+        uses: actions/upload-release-asset@v1.0.1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./${{ steps.pkg.outputs.windows_file }}
+          asset_name: ${{ steps.pkg.outputs.windows_file }}
           asset_content_type: application/gzip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
