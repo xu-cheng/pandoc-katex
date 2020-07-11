@@ -12,5 +12,8 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 anyhow = "1.0"
-katex = "0.2"
+katex = "0.2.3"
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+structopt = "0.3"
+toml = "0.5"
