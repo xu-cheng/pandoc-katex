@@ -23,6 +23,32 @@ pandoc -t html --filter pandoc-katex \
   --standalone -o output.html /path/to/input.md
 ```
 
+You can also pass additional flags to custom KaTeX rendering. For example, to use custom LaTeX macro:
+
+```bash
+pandoc -t json /path/to/input.md | \
+  pandoc-katex --macro '\RR:\mathbb{R}' | \
+  pandoc -f json -t html \
+    --css https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css \
+    --css https://pandoc.org/demo/pandoc.css \
+    --standalone -o output.html
+```
+
+For more flags, see `pandoc-katex --help`.
+
+## Configure File
+
+Options can also be read from external configure file. The configure file should be in `.toml` format. For example:
+
+```toml
+fleqn = true
+
+[macros]
+"\\RR" = "\\mathbb{R}"
+```
+
+The configure file path can either be passed as a command line argument `--config-file /path/to/config.toml` or set by environment variable `PANDOC_KATEX_CONFIG_FILE`.
+
 ## License
 
 <sup>
