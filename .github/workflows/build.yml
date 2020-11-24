@@ -11,9 +11,6 @@ jobs:
           - name: linux-musl
             os: ubuntu
             target: x86_64-unknown-linux-musl
-          - name: macos
-            os: macos
-            target: x86_64-apple-darwin
           - name: windows
             os: ubuntu
             target: x86_64-pc-windows-gnu
@@ -47,6 +44,7 @@ jobs:
           args: --target ${{ matrix.platform.target }} --locked --path . --root pandoc-katex
       - name: Package
         run: |
+          cp LICENSE-* ./pandoc-katex
           tar -C ./pandoc-katex -czf "pandoc-katex-$(git describe --tags --always)-${{ matrix.platform.target }}.tar.gz" .
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -54,11 +52,53 @@ jobs:
           name: ${{ matrix.platform.name }}
           path: ./pandoc-katex-*.tar.gz
 
+  build-macos:
+    name: build [macos]
+    runs-on: macos-11.0
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+      - name: Set up rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: beta
+          target: x86_64-apple-darwin
+          default: true
+      - name: Install aarch64-apple-darwin target
+        run: |
+          rustup target add aarch64-apple-darwin
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: macos-universal-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+      - name: Run cargo build [x86_64]
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: --target x86_64-apple-darwin --locked --path . --root pandoc-katex-x86_64
+      - name: Run cargo build [aarch64]
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: --target aarch64-apple-darwin --locked --path . --root pandoc-katex-aarch64
+      - name: Package
+        run: |
+          mkdir -p pandoc-katex/bin
+          lipo -create -output pandoc-katex/bin/pandoc-katex pandoc-katex-{x86_64,aarch64}/bin/pandoc-katex
+          cp LICENSE-* ./pandoc-katex
+          tar -C ./pandoc-katex -czf "pandoc-katex-$(git describe --tags --always)-universal-apple-darwin.tar.gz" .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos
+          path: ./pandoc-katex-*.tar.gz
+
   deploy-crate:
     if: startsWith(github.ref, 'refs/tags/')
     name: "deploy crate"
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, build-macos]
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
@@ -81,7 +121,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     name: "deploy artifacts"
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, build-macos]
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v2
@@ -93,7 +133,7 @@ jobs:
           mv **/pandoc-katex-*.tar.gz .
           echo "::set-output name=linux_gnu_file::$(echo pandoc-katex-*-x86_64-unknown-linux-gnu.tar.gz)"
           echo "::set-output name=linux_musl_file::$(echo pandoc-katex-*-x86_64-unknown-linux-musl.tar.gz)"
-          echo "::set-output name=macos_file::$(echo pandoc-katex-*-x86_64-apple-darwin.tar.gz)"
+          echo "::set-output name=macos_file::$(echo pandoc-katex-*-universal-apple-darwin.tar.gz)"
           echo "::set-output name=windows_file::$(echo pandoc-katex-*-x86_64-pc-windows-gnu.tar.gz)"
       - name: Create Release
         id: create_release
