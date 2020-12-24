@@ -12,11 +12,6 @@ jobs:
         with:
           toolchain: stable
           components: clippy
-      - name: Cache cargo clippy
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-clippy-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Run clippy
         uses: actions-rs/clippy-check@v1
         with:
