@@ -18,7 +18,7 @@ Alternatively, you can download the pre-built binaries from [releases](https://g
 
 ```bash
 pandoc -t html --filter pandoc-katex \
-  --css https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css \
+  --css https://cdn.jsdelivr.net/npm/katex@0.13.9/dist/katex.min.css \
   --css https://pandoc.org/demo/pandoc.css \
   --standalone -o output.html /path/to/input.md
 ```
@@ -29,7 +29,7 @@ You can also pass additional flags to custom KaTeX rendering. For example, to us
 pandoc -t json /path/to/input.md | \
   pandoc-katex --macro '\RR:\mathbb{R}' | \
   pandoc -f json -t html \
-    --css https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css \
+    --css https://cdn.jsdelivr.net/npm/katex@0.13.9/dist/katex.min.css \
     --css https://pandoc.org/demo/pandoc.css \
     --standalone -o output.html
 ```
