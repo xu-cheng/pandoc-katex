@@ -119,6 +119,10 @@ struct ArgOpt {
         parse(from_os_str)
     )]
     config_file: Option<PathBuf>,
+
+    /// Pandoc output format. This argument is ignored.
+    #[structopt(name = "OUTPUT_FORMAT")]
+    output_format: Option<String>,
 }
 
 fn parse_output_type(input: &str) -> Result<katex::OutputType> {
