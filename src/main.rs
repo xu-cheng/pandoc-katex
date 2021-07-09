@@ -74,11 +74,28 @@ impl Visitor {
 }
 
 /// Options read from config file.
+/// Read <https://katex.org/docs/options.html> for more information.
 #[derive(Debug, Deserialize)]
 struct ConfigOpt {
+    /// Set KaTeX output type. Accepted values: html, mathml, htmlAndMathml.
     output_type: Option<String>,
+    /// Whether to have `\tags` rendered on the left instead of the right.
     leqno: Option<bool>,
+    /// Whether to make display math flush left.
     fleqn: Option<bool>,
+    /// Whether to let KaTeX throw a `ParseError` for invalid LaTeX.
+    throw_on_error: Option<bool>,
+    /// Color used for invalid LaTeX.
+    error_color: Option<String>,
+    /// Minimum thickness, in ems.
+    min_rule_thickness: Option<f64>,
+    /// Max size for user-specified sizes.
+    max_size: Option<f64>,
+    /// Limit for the number of macro expansions.
+    max_expand: Option<i32>,
+    /// Whether to trust users' input.
+    trust: Option<bool>,
+    /// Custom macros.
     macros: Option<HashMap<String, String>>,
 }
 
@@ -106,6 +123,30 @@ struct ArgOpt {
     /// Make display math flush left.
     #[structopt(long)]
     fleqn: bool,
+
+    /// Make KaTeX throw a ParseError for invalid LaTeX.
+    #[structopt(long)]
+    throw_on_error: bool,
+
+    /// Color used for invalid LaTeX.
+    #[structopt(long)]
+    error_color: Option<String>,
+
+    /// Minimum thickness, in ems.
+    #[structopt(long)]
+    min_rule_thickness: Option<f64>,
+
+    /// Max size for user-specified sizes.
+    #[structopt(long)]
+    max_size: Option<f64>,
+
+    /// Limit for the number of macro expansions.
+    #[structopt(long)]
+    max_expand: Option<i32>,
+
+    /// Trust users' input.
+    #[structopt(long)]
+    trust: bool,
 
     /// Use custom marco. e.g. `-m '\RR:\mathbb{R}'`.
     #[structopt(short = "m", long = "macro")]
@@ -153,6 +194,30 @@ impl ArgOpt {
                 opts.set_fleqn(fleqn);
             }
 
+            if let Some(throw_on_error) = cfg_opt.throw_on_error {
+                opts.set_throw_on_error(throw_on_error);
+            }
+
+            if let Some(error_color) = cfg_opt.error_color {
+                opts.set_error_color(error_color);
+            }
+
+            if let Some(min_rule_thickness) = cfg_opt.min_rule_thickness {
+                opts.set_min_rule_thickness(min_rule_thickness);
+            }
+
+            if let Some(max_size) = cfg_opt.max_size {
+                opts.set_max_size(Some(max_size));
+            }
+
+            if let Some(max_expand) = cfg_opt.max_expand {
+                opts.set_max_expand(Some(max_expand));
+            }
+
+            if let Some(trust) = cfg_opt.trust {
+                opts.set_trust(trust);
+            }
+
             if let Some(macros) = cfg_opt.macros {
                 for (macro_name, macro_body) in macros.into_iter() {
                     opts.add_macro(macro_name, macro_body);
@@ -170,6 +235,30 @@ impl ArgOpt {
 
         if self.fleqn {
             opts.set_fleqn(true);
+        }
+
+        if self.throw_on_error {
+            opts.set_throw_on_error(true);
+        }
+
+        if let Some(error_color) = &self.error_color {
+            opts.set_error_color(error_color.clone());
+        }
+
+        if let Some(min_rule_thickness) = self.min_rule_thickness {
+            opts.set_min_rule_thickness(min_rule_thickness);
+        }
+
+        if let Some(max_size) = self.max_size {
+            opts.set_max_size(Some(max_size));
+        }
+
+        if let Some(max_expand) = self.max_expand {
+            opts.set_max_expand(Some(max_expand));
+        }
+
+        if self.trust {
+            opts.set_trust(true);
         }
 
         for m in &self.macros {

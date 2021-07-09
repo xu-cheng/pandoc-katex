@@ -49,6 +49,21 @@ fleqn = true
 
 The configure file path can either be passed as a command line argument `--config-file /path/to/config.toml` or set by environment variable `PANDOC_KATEX_CONFIG_FILE`.
 
+The configure file accepts the following options. Please refer to <https://katex.org/docs/options.html> for more information.
+
+| Option | Meaning | Accepted values |
+|--------|---------|-----------------|
+| `output_type` | Set KaTeX output type. | `"html"`, `"mathml"`, `"htmlAndMathml"` |
+| `leqno` | Whether to have `\tags` rendered on the left instead of the right. | Boolean |
+| `fleqn` | Whether to make display math flush left. | Boolean |
+| `throw_on_error` | Whether to let KaTeX throw a `ParseError` for invalid LaTeX. | Boolean |
+| `error_color` | Color used for invalid LaTeX. | String |
+| `min_rule_thickness` | Minimum thickness, in ems. | Float |
+| `max_size` | Max size for user-specified sizes. | Float |
+| `max_expand` | Limit for the number of macro expansions. | Int |
+| `trust` | Whether to trust users' input. | Boolean |
+| `macros` | Custom macros. | Dictionary |
+
 ## License
 
 <sup>
