@@ -3,6 +3,7 @@ name = "pandoc-katex"
 version = "0.1.7"
 authors = ["Cheng XU <rust@xuc.me>"]
 edition = "2018"
+resolver = "2"
 license = "MIT OR Apache-2.0"
 description = "Pandoc filter to render math equations using KaTeX"
 repository = "https://github.com/xu-cheng/pandoc-katex"
