@@ -38,12 +38,12 @@ jobs:
           command: install
           args: --target ${{ matrix.platform.target }} --locked --path . --root pandoc-katex
       - name: Package (Linux)
-        if: matrix.os != 'windows'
+        if: matrix.platform.os != 'windows'
         run: |
           cp LICENSE-* ./pandoc-katex
           tar -C ./pandoc-katex -czf "pandoc-katex-$(git describe --tags --always)-${{ matrix.platform.target }}.tar.gz" .
       - name: Package (Windows)
-        if: matrix.os == 'windows'
+        if: matrix.platform.os == 'windows'
         run: |
           $version = git describe --tags --always
           Copy-Item -Path "LICENSE-*" -Destination pandoc-katex
