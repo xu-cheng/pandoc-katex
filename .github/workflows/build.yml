@@ -46,8 +46,8 @@ jobs:
         if: matrix.os == 'windows'
         run: |
           $version = git describe --tags --always
-          Copy-Item -Path "LICENSE-*" -Destination .\\pandoc-katex
-          Compress-Archive -Path .\\pandoc-katex -DestinationPath "pandoc-katex-$($version)-${{ matrix.platform.target }}.zip" .
+          Copy-Item -Path "LICENSE-*" -Destination pandoc-katex
+          Compress-Archive -Path "pandoc-katex\*" -DestinationPath "pandoc-katex-$($version)-${{ matrix.platform.target }}.zip"
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
