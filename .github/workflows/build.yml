@@ -12,8 +12,8 @@ jobs:
             os: ubuntu
             target: x86_64-unknown-linux-musl
           - name: windows
-            os: ubuntu
-            target: x86_64-pc-windows-gnu
+            os: windows
+            target: x86_64-pc-windows-msvc
     name: build [${{ matrix.platform.name }}]
     runs-on: ${{ matrix.platform.os }}-latest
     steps:
@@ -28,10 +28,6 @@ jobs:
         if: matrix.platform.name == 'linux-musl'
         run: |
           sudo apt-get install musl-tools -y
-      - name: Set up mingw-w64
-        if: matrix.platform.name == 'windows'
-        run: |
-          sudo apt-get install mingw-w64 -y
       - name: Cache rust artifacts
         uses: Swatinem/rust-cache@v1
         with:
@@ -41,15 +37,22 @@ jobs:
         with:
           command: install
           args: --target ${{ matrix.platform.target }} --locked --path . --root pandoc-katex
-      - name: Package
+      - name: Package (Linux)
+        if: matrix.os != 'windows'
         run: |
           cp LICENSE-* ./pandoc-katex
           tar -C ./pandoc-katex -czf "pandoc-katex-$(git describe --tags --always)-${{ matrix.platform.target }}.tar.gz" .
+      - name: Package (Windows)
+        if: matrix.os == 'windows'
+        run: |
+          $version = git describe --tags --always
+          Copy-Item -Path "LICENSE-*" -Destination .\\pandoc-katex
+          Compress-Archive -Path .\\pandoc-katex -DestinationPath "pandoc-katex-$($version)-${{ matrix.platform.target }}.zip" .
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.platform.name }}
-          path: ./pandoc-katex-*.tar.gz
+          path: pandoc-katex-*
 
   build-macos:
     name: build [macos]
@@ -134,6 +137,6 @@ jobs:
           name: Release ${{ env.TAG_VERSION }}
           draft: true
           files: |
-            **/pandoc-katex-*.tar.gz
+            **/pandoc-katex-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
