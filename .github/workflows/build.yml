@@ -124,8 +124,9 @@ jobs:
     steps:
       - name: Get release version
         run: |
-          echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          echo "version is: ${{ env.TAG_VERSION }}"
+          TAG_VERSION="${GITHUB_REF#refs/tags/}"
+          echo "TAG_VERSION=${TAG_VERSION}" >> $GITHUB_ENV
+          echo "version is: ${TAG_VERSION}"
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
