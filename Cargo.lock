@@ -266,7 +266,7 @@ checksum = "da32515d9f6e6e489d7bc9d84c71b060db7247dc035bbe44eac88cf87486d8d5"
 
 [[package]]
 name = "pandoc-katex"
-version = "0.1.8"
+version = "0.1.9"
 dependencies = [
  "anyhow",
  "katex",
