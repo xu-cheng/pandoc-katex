@@ -46,8 +46,8 @@ impl Visitor {
 
     #[inline]
     fn walk_object(&self, obj: &mut JsonMap<String, JsonValue>) -> Result<()> {
-        for mut value in obj.values_mut() {
-            self.walk_value(&mut value)?;
+        for value in obj.values_mut() {
+            self.walk_value(value)?;
         }
 
         Ok(())
@@ -55,8 +55,8 @@ impl Visitor {
 
     #[inline]
     fn walk_array(&self, array: &mut Vec<JsonValue>) -> Result<()> {
-        for mut value in array.iter_mut() {
-            self.walk_value(&mut value)?;
+        for value in array.iter_mut() {
+            self.walk_value(value)?;
         }
 
         Ok(())
@@ -163,6 +163,7 @@ struct ArgOpt {
 
     /// Pandoc output format. This argument is ignored.
     #[structopt(name = "OUTPUT_FORMAT")]
+    #[allow(dead_code)]
     output_format: Option<String>,
 }
 
