@@ -54,7 +54,7 @@ impl Visitor {
     }
 
     #[inline]
-    fn walk_array(&self, array: &mut Vec<JsonValue>) -> Result<()> {
+    fn walk_array(&self, array: &mut [JsonValue]) -> Result<()> {
         for value in array.iter_mut() {
             self.walk_value(value)?;
         }
