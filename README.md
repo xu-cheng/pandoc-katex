@@ -12,6 +12,10 @@ It is powered by the [`katex` Rust crate](https://github.com/xu-cheng/katex-rs).
 cargo install pandoc-katex
 ```
 
+When building from the source, the following dependencies are required:
+* `gcc` and `patch` for Linux, macOS, and MinGW/MSYS2.
+* `msvc` for Windows
+
 Alternatively, you can download the pre-built binaries from [releases](https://github.com/xu-cheng/pandoc-katex/releases).
 
 ## Usage
