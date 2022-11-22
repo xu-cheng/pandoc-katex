@@ -14,7 +14,7 @@ cargo install pandoc-katex
 
 When building from the source, the following dependencies are required:
 * `gcc` and `patch` for Linux, macOS, and MinGW/MSYS2.
-* `msvc` for Windows
+* `msvc` for Windows.
 
 Alternatively, you can download the pre-built binaries from [releases](https://github.com/xu-cheng/pandoc-katex/releases).
 
@@ -27,7 +27,7 @@ pandoc -t html --filter pandoc-katex \
   --standalone -o output.html /path/to/input.md
 ```
 
-You can also pass additional flags to custom KaTeX rendering. For example, to use custom LaTeX macro:
+You can also pass additional flags to custom KaTeX rendering. For example, to use custom LaTeX macros:
 
 ```bash
 pandoc -t json /path/to/input.md | \
@@ -40,9 +40,9 @@ pandoc -t json /path/to/input.md | \
 
 For more flags, see `pandoc-katex --help`.
 
-## Configure File
+## Configuration File
 
-Options can also be read from external configure file. The configure file should be in `.toml` format. For example:
+Options can also be read from an external configuration file. The configuration file should be in `.toml` format. For example:
 
 ```toml
 fleqn = true
@@ -51,9 +51,9 @@ fleqn = true
 "\\RR" = "\\mathbb{R}"
 ```
 
-The configure file path can either be passed as a command line argument `--config-file /path/to/config.toml` or set by environment variable `PANDOC_KATEX_CONFIG_FILE`.
+The configuration file path can either be passed as a command line argument `--config-file /path/to/config.toml` or set by environment variable `PANDOC_KATEX_CONFIG_FILE`.
 
-The configure file accepts the following options. Please refer to <https://katex.org/docs/options.html> for more information.
+The configuration file accepts the following options. Please refer to <https://katex.org/docs/options.html> for more information.
 
 | Option | Meaning | Accepted values |
 |--------|---------|-----------------|
