@@ -1,10 +1,10 @@
 use anyhow::{anyhow, bail, Context, Result};
+use clap::Parser;
 use serde::Deserialize;
 use serde_json::{json, Map as JsonMap, Value as JsonValue};
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-use structopt::StructOpt;
 
 #[derive(Debug)]
 struct Visitor {
@@ -106,63 +106,60 @@ impl ConfigOpt {
 }
 
 /// Options read from arguments.
-#[derive(Debug, StructOpt)]
-#[structopt(
-    name = "pandoc-katex",
-    about = "Pandoc filter to render math equations using KaTeX."
-)]
+#[derive(Debug, Parser)]
+#[command(author, version, about, long_about = None)]
 struct ArgOpt {
     /// Set KaTeX output type. Accepted values: html, mathml, htmlAndMathml
-    #[structopt(long, parse(try_from_str = parse_output_type))]
+    #[clap(long, value_parser = parse_output_type)]
     output_type: Option<katex::OutputType>,
 
     /// Make `\tags` rendered on the left instead of the right.
-    #[structopt(long)]
+    #[clap(long)]
     leqno: bool,
 
     /// Make display math flush left.
-    #[structopt(long)]
+    #[clap(long)]
     fleqn: bool,
 
     /// Make KaTeX throw a ParseError for invalid LaTeX.
-    #[structopt(long)]
+    #[clap(long)]
     throw_on_error: bool,
 
     /// Color used for invalid LaTeX.
-    #[structopt(long)]
+    #[clap(long)]
     error_color: Option<String>,
 
     /// Minimum thickness, in ems.
-    #[structopt(long)]
+    #[clap(long)]
     min_rule_thickness: Option<f64>,
 
     /// Max size for user-specified sizes.
-    #[structopt(long)]
+    #[clap(long)]
     max_size: Option<f64>,
 
     /// Limit for the number of macro expansions.
-    #[structopt(long)]
+    #[clap(long)]
     max_expand: Option<i32>,
 
     /// Trust users' input.
-    #[structopt(long)]
+    #[clap(long)]
     trust: bool,
 
     /// Use custom marco. e.g. `-m '\RR:\mathbb{R}'`.
-    #[structopt(short = "m", long = "macro")]
+    #[clap(short = 'm', long = "macro")]
     macros: Vec<String>,
 
     /// Load KaTeX options from external `.toml` file.
-    #[structopt(
-        short = "f",
+    #[clap(
+        short = 'f',
         long = "config-file",
         env = "PANDOC_KATEX_CONFIG_FILE",
-        parse(from_os_str)
+        value_parser
     )]
     config_file: Option<PathBuf>,
 
     /// Pandoc output format. This argument is ignored.
-    #[structopt(name = "OUTPUT_FORMAT")]
+    #[clap(name = "OUTPUT_FORMAT")]
     #[allow(dead_code)]
     output_format: Option<String>,
 }
@@ -280,7 +277,7 @@ impl ArgOpt {
 }
 
 fn main() -> Result<()> {
-    let opt = ArgOpt::from_args();
+    let opt = ArgOpt::parse();
     let katex_opts = opt.get_katex_opts()?;
 
     let mut data: JsonValue = serde_json::from_reader(std::io::stdin().lock())?;
