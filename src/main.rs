@@ -101,7 +101,7 @@ struct ConfigOpt {
 
 impl ConfigOpt {
     fn load_from_file(file: &Path) -> Result<Self> {
-        Ok(toml::from_str(fs::read_to_string(&file)?.as_str())?)
+        Ok(toml::from_str(fs::read_to_string(file)?.as_str())?)
     }
 }
 
