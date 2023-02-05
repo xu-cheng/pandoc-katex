@@ -1,5 +1,6 @@
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
+use once_cell::sync::Lazy;
 use serde::Deserialize;
 use serde_json::{json, Map as JsonMap, Value as JsonValue};
 use std::collections::HashMap;
@@ -105,9 +106,15 @@ impl ConfigOpt {
     }
 }
 
+fn long_version() -> &'static str {
+    static LONG_VERSION: Lazy<String> =
+        Lazy::new(|| format!("{}\nkatex {}", clap::crate_version!(), katex::KATEX_VERSION));
+    LONG_VERSION.as_str()
+}
+
 /// Options read from arguments.
 #[derive(Debug, Parser)]
-#[command(author, version, about, long_about = None)]
+#[command(author, version, long_version = long_version(), about, long_about = None)]
 struct ArgOpt {
     /// Set KaTeX output type. Accepted values: html, mathml, htmlAndMathml
     #[clap(long, value_parser = parse_output_type)]
@@ -162,6 +169,10 @@ struct ArgOpt {
     #[clap(name = "OUTPUT_FORMAT")]
     #[allow(dead_code)]
     output_format: Option<String>,
+
+    /// Print katex version
+    #[clap(long)]
+    katex_version: bool,
 }
 
 fn parse_output_type(input: &str) -> Result<katex::OutputType> {
@@ -278,6 +289,11 @@ impl ArgOpt {
 
 fn main() -> Result<()> {
     let opt = ArgOpt::parse();
+    if opt.katex_version {
+        println!("{}", katex::KATEX_VERSION);
+        return Ok(());
+    }
+
     let katex_opts = opt.get_katex_opts()?;
 
     let mut data: JsonValue = serde_json::from_reader(std::io::stdin().lock())?;
