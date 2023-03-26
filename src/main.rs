@@ -17,7 +17,7 @@ impl Visitor {
         Self { katex_opts }
     }
 
-    fn visit_object(&self, obj: &mut JsonMap<String, JsonValue>) -> Result<()> {
+    fn visit_object(&mut self, obj: &mut JsonMap<String, JsonValue>) -> Result<()> {
         if obj.get("t").map(|v| v == "Math") != Some(true) {
             return self.walk_object(obj);
         }
@@ -34,9 +34,8 @@ impl Visitor {
             .as_str()
             .context("invalid data type")?;
 
-        let mut opts = self.katex_opts.clone();
-        opts.set_display_mode(math_type == "DisplayMath");
-        let html = katex::render_with_opts(tex, opts)?;
+        self.katex_opts.set_display_mode(math_type == "DisplayMath");
+        let html = katex::render_with_opts(tex, &self.katex_opts)?;
 
         obj.clear();
         obj.insert("t".to_owned(), json!("RawInline"));
@@ -46,7 +45,7 @@ impl Visitor {
     }
 
     #[inline]
-    fn walk_object(&self, obj: &mut JsonMap<String, JsonValue>) -> Result<()> {
+    fn walk_object(&mut self, obj: &mut JsonMap<String, JsonValue>) -> Result<()> {
         for value in obj.values_mut() {
             self.walk_value(value)?;
         }
@@ -55,7 +54,7 @@ impl Visitor {
     }
 
     #[inline]
-    fn walk_array(&self, array: &mut [JsonValue]) -> Result<()> {
+    fn walk_array(&mut self, array: &mut [JsonValue]) -> Result<()> {
         for value in array.iter_mut() {
             self.walk_value(value)?;
         }
@@ -63,7 +62,7 @@ impl Visitor {
         Ok(())
     }
 
-    fn walk_value(&self, value: &mut JsonValue) -> Result<()> {
+    fn walk_value(&mut self, value: &mut JsonValue) -> Result<()> {
         match value {
             JsonValue::Array(array) => self.walk_array(array)?,
             JsonValue::Object(obj) => self.visit_object(obj)?,
@@ -297,7 +296,7 @@ fn main() -> Result<()> {
     let katex_opts = opt.get_katex_opts()?;
 
     let mut data: JsonValue = serde_json::from_reader(std::io::stdin().lock())?;
-    let visitor = Visitor::new(katex_opts);
+    let mut visitor = Visitor::new(katex_opts);
     visitor.walk_value(&mut data)?;
     serde_json::to_writer(std::io::stdout().lock(), &data)?;
     Ok(())
