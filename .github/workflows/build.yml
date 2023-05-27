@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.platform.os }}-latest
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -59,7 +59,7 @@ jobs:
     runs-on: macos-11.0
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -100,7 +100,7 @@ jobs:
     needs: [build, build-macos]
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up rust toolchain
         uses: actions-rs/toolchain@v1
         with:
